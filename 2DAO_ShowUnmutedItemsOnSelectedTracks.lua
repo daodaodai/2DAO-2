@@ -25,6 +25,12 @@ function showMsg2( strContent )
 	reaper.ShowMessageBox(strContent, "--", 0)
 end
 
+function DecimalsToMinutes(dec)
+	local ms = tonumber(dec)
+	return math.floor(ms / 60)..":"..(ms % 60)
+end
+
+
 
 ---------------------------------------
 -- If the day the tooltip was displayed was earlier than totday
@@ -62,6 +68,7 @@ end
 reaper.Main_OnCommand( 40421, 0 )  -- command: Item: Select all items in track
 
 tblAllUnmutedItems = {}
+tblAllUnmuted_Times = {}
 entryCount = 0
 outputStr1 = ""
 outputStr2 = ""
@@ -75,15 +82,19 @@ numOfSelectedItems = reaper.CountSelectedMediaItems( thisProject ) -- 0: this pr
 for i = 0, numOfSelectedItems - 1 do
 	local item = reaper.GetSelectedMediaItem( thisProject, i)
 	local isMute = reaper.GetMediaItemInfo_Value( item, "B_MUTE" )
+	local startPos = reaper.GetMediaItemInfo_Value( item, "D_POSITION" )
+	local startPosReadable = DecimalsToMinutes(startPos)
+	
 	if (isMute == bUnmute) then
 		local take = reaper.GetActiveTake(item)
 		if take and not reaper.TakeIsMIDI( take ) then
 			local takeName = reaper.GetTakeName( take )
 			
 			if (takeName ~= previousItemName) then
-				outputStr1 = outputStr1..takeName.."\n"
+				--outputStr1 = startPos.."  "..outputStr1..takeName.."\n"
+				tblAllUnmuted_Times[j] = startPosReadable
 				previousItemName = takeName
-				tblAllUnmutedItems[j] = " ** "..takeName
+				tblAllUnmutedItems[j] = takeName
 				--showMsg(tblAllUnmutedItems[j], "新增take name")
 				j = j + 1
 			end	
@@ -91,11 +102,11 @@ for i = 0, numOfSelectedItems - 1 do
 	end
 end
 
---for k = 0, j do
---	showMsg(tblAllUnmutedItems[k], "talbe  take name")
---end
+outputStr_3 = "\n\n--------------详情---------------\n\n"
+for k = 0, j - 1 do
+	outputStr_3 = outputStr_3.."\n"..tblAllUnmuted_Times[k].."   "..tblAllUnmutedItems[k]
+end
 
---showMsg(outputStr1, "所有没静音的文件 in the selected tracks")
 
 table.sort( tblAllUnmutedItems )
 entryCount = #tblAllUnmutedItems  -- # actually returns the max index, NOT the the length!
@@ -112,7 +123,7 @@ for i = 0, entryCount do
 		bFound = false
 	else
 		if (strTemp ~= previousItemName) then
-			outputStr2 = outputStr2..strTemp.."\n"
+			outputStr2 = outputStr2.." ** "..strTemp.."\n"
 			previousItemName = strTemp
 		end
 	end
@@ -120,5 +131,6 @@ end
 
 if bFound and outputStr2 then
 	outputStr2 = "所有没静音的文件 in the selected tracks:\n".."---------------------------------------\n\n"..outputStr2
-	reaper.ShowConsoleMsg(outputStr2)
+	--reaper.ShowConsoleMsg(outputStr2)
+	reaper.ShowConsoleMsg(outputStr2..outputStr_3)
 end
