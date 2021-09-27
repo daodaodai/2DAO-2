@@ -7,7 +7,7 @@ all_items = reaper.CountSelectedMediaItems(0)
     
     MediaItem_Take = reaper.GetTake(item, 0)
   
-    reaper.TakeFX_AddByName(MediaItem_Take, "", 1)
+    reaper.TakeFX_AddByName(MediaItem_Take, "ValhallaVintageVerb (Valhalla DSP, LLC)", 1)
   
   end
 
