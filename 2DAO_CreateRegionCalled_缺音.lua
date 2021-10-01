@@ -17,12 +17,13 @@ end
 
 function main()
 
-	reaper.Main_OnCommand( 40174, 0 )  -- Markers: Insert region from time selection
-	
 	cursorPosition = reaper.GetCursorPosition() -- this would be the start of the region
-	local thisProject = 0  -- 0 is the current project
-	markerIdx, regionIdx = reaper.GetLastMarkerAndCurRegion(thisProject, cursorPosition)
+	local thisProject = 0  -- 0 is the current project	
 	
+	reaper.Main_OnCommand( 40174, 0 )  -- Markers: Insert region from time selection
+	markerIdx, regionIdx = reaper.GetLastMarkerAndCurRegion(thisProject, cursorPosition)
+	reaper.GoToRegion(thisProject, regionIdx, false)
+		
 	local ret, bIsRegion, startPos, endPos, name, markrgnindexnumber = reaper.EnumProjectMarkers(regionIdx)
 	reaper.SetProjectMarkerByIndex(0, regionIdx, bIsRegion, startPos, endPos, markrgnindexnumber, newRegionName, 0)
 
