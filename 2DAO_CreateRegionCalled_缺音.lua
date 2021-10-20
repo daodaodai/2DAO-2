@@ -22,7 +22,7 @@ function main()
 	
 	reaper.Main_OnCommand( 40174, 0 )  -- Markers: Insert region from time selection
 	markerIdx, regionIdx = reaper.GetLastMarkerAndCurRegion(thisProject, cursorPosition)
-	reaper.GoToRegion(thisProject, regionIdx, false)
+	--reaper.GoToRegion(thisProject, regionIdx, false)
 		
 	local ret, bIsRegion, startPos, endPos, name, markrgnindexnumber = reaper.EnumProjectMarkers(regionIdx)
 	reaper.SetProjectMarkerByIndex(0, regionIdx, bIsRegion, startPos, endPos, markrgnindexnumber, newRegionName, 0)
