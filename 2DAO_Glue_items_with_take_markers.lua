@@ -85,7 +85,7 @@ if itemsCount == 0 then
 	return
 elseif itemsCount == 1 then  -- 1 item selected
 	item = reaper.GetSelectedMediaItem(0,0)
-	po, itemsEndPosition = GetItemStartEndPoisitions(item)
+	itemsStartPosition, itemsEndPosition = GetItemStartEndPoisitions(item)
 	
 	continue = BuildMarkerTable(item)
 else  -- multiple items selected
