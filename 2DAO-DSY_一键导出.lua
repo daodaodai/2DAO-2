@@ -35,13 +35,10 @@ local version='v1.3'  --版本号
 --------------------------------------------------------------读取预置文件------------------------------------------------------------------------------------
 local sep=reaper.GetOS():find('Win') and '\\' or '/'
 local check_, render_path_tmp=reaper.GetSetProjectInfo_String(0, 'RENDER_FILE', '', 0)
-showMsg("1 - "..render_path_tmp)
 if not check and render_path_tmp=='' then render_path_tmp=reaper.GetProjectPath('') end
-showMsg("2- "..render_path_tmp)
 --上面是 noiZ 的代码。我来 overide 它
 --local retval, render_path_relative = reaper.get_config_var_string("defrenderpath")
 render_path = string.gsub(render_path_tmp, "reaper_media", "mixdown")
-showMsg("3 - "..render_path)
 
 
 local config_path=reaper.GetResourcePath()  --获取预置文件路径   
