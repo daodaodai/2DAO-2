@@ -35,7 +35,6 @@ local version='v1.3'  --版本号
 --------------------------------------------------------------读取预置文件------------------------------------------------------------------------------------
 local sep=reaper.GetOS():find('Win') and '\\' or '/'
 local check_, render_path_tmp=reaper.GetSetProjectInfo_String(0, 'RENDER_FILE', '', 0)
-showMsg(render_path_tmp.."      -- "..tostring(check_))
 if not check and render_path_tmp=='' then render_path_tmp=reaper.GetProjectPath('') end
 
 --上面是 noiZ 的代码。我来 搞搞 它
