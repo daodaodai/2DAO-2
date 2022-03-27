@@ -76,7 +76,8 @@ tblAllUnmuted_EndTimes = {}
 tblAll_TimeAndNames = {}
 entryCount = 0
 outputStr1 = ""
-outputStr2 = "---------------------------------------\n没静音的文件 in the selected tracks:\n---------------------------------------\n\n"
+strProjName = reaper.GetProjectName(thisProject)
+outputStr2 = "        "..strProjName.."\n---------------------------------------\n没静音的文件 in the selected tracks:\n---------------------------------------\n\n"
 previousItemName = ""
 j = 0
 
