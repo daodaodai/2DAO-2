@@ -82,6 +82,7 @@ startTime_timeSelected, endTime_timeSelected = getTimesOfTimeSelection()
 if (startTime_timeSelected == 0 and endTime_timeSelected == 0) then
 	bTimeSelected = false
 end
+
 ----------------------------------------------
 
 reaper.Main_OnCommand( 40421, 0 )  -- command: Item: Select all items in track
@@ -163,11 +164,7 @@ for i = 0, entryCount do
 	end
 end
 
---if bFound and outputStr2 then
-	--outputStr2 = "所有没静音的文件 in the selected tracks:\n".."---------------------------------------\n\n"..outputStr2
-	--reaper.ShowConsoleMsg(outputStr2)
---	reaper.ShowConsoleMsg(outputStr2..outputStr_3)
---end
+
 
 -- 按时间顺序给音乐文件列表
 table.sort(tblAllUnmuted_Times)
@@ -199,7 +196,8 @@ if bFound then
 		strPreviousItem_name = strName
 	end	
 	
-	reaper.ShowConsoleMsg(outputStr2..outputStr_4..outputStr_3)
+	-- reaper.ShowConsoleMsg(outputStr2..outputStr_4..outputStr_3)
+	reaper.ShowConsoleMsg(outputStr2..outputStr_4)
 else
 	showMsg2("轨道上没有 没静音 的文件. No unmuted files found on tracks selected.")
 end
