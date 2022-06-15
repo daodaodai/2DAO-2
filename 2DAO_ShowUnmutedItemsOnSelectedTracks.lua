@@ -50,6 +50,14 @@ function checkIfToShowTooltip ()
 	return bDisplayMsg
 end
 
+---------------------------------------
+-- get the times of the time selection end points
+function getTimesOfTimeSelection ()
+	local start = 0
+	local endtime = 0
+	start, endtime = reaper.GetSet_LoopTimeRange2(0, false, false, start, endtime, false)
+	return start, endtime
+end
 
 
 
@@ -66,7 +74,16 @@ if bDisplayMsg == true then
 	reaper.SetExtState(sectionName, section_dayOfMonth, tostring(today), true)
 end
 
-	
+----------------------------------------------
+startTime_timeSelected = 0
+endTime_timeSelected = 0
+bTimeSelected = true
+startTime_timeSelected, endTime_timeSelected = getTimesOfTimeSelection()
+if (startTime_timeSelected == 0 and endTime_timeSelected == 0) then
+	bTimeSelected = false
+end
+----------------------------------------------
+
 reaper.Main_OnCommand( 40421, 0 )  -- command: Item: Select all items in track
 
 tblAllUnmutedItems = {}
@@ -92,24 +109,29 @@ for i = 0, numOfSelectedItems - 1 do
 	--local startPosReadable = DecimalsToMinutes(startPos)
 	local timeLen = reaper.GetMediaItemInfo_Value( item, "D_LENGTH" )
 	local endPos = startPos + timeLen
+	local bRecordThisItem = false
 	
-	if (isMute == bUnmute) then
-		local take = reaper.GetActiveTake(item)
-		if take and not reaper.TakeIsMIDI( take ) then
-			local takeName = reaper.GetTakeName( take )
-			
-			--if (takeName ~= previousItemName) then
-				--outputStr1 = startPos.."  "..outputStr1..takeName.."\n"
-				-- 记录：新片段的时间点、名字、终止时间
-				tblAllUnmuted_Times[j] = startPos
-				--tblAllUnmuted_TimesRaw[j] = startPos
-				previousItemName = takeName
-				tblAllUnmutedItems[j] = takeName
-				--showMsg(tblAllUnmutedItems[j], "新增take name")
-				tblAll_TimeAndNames[startPos] = takeName
-				tblAllUnmuted_EndTimes[startPos] = endPos
-				j = j + 1
-			--end	
+	-- if the item is totally outside the time selection, ignore it
+	-- no time selected? go ahead record it
+	if ( (bTimeSelected == false) or (bTimeSelected and endPos >= startTime_timeSelected and startPos <= endTime_timeSelected) ) then
+		if (isMute == bUnmute) then
+			local take = reaper.GetActiveTake(item)
+			if take and not reaper.TakeIsMIDI( take ) then
+				local takeName = reaper.GetTakeName( take )
+				
+				--if (takeName ~= previousItemName) then
+					--outputStr1 = startPos.."  "..outputStr1..takeName.."\n"
+					-- 记录：新片段的时间点、名字、终止时间
+					tblAllUnmuted_Times[j] = startPos
+					--tblAllUnmuted_TimesRaw[j] = startPos
+					previousItemName = takeName
+					tblAllUnmutedItems[j] = takeName
+					--showMsg(tblAllUnmutedItems[j], "新增take name")
+					tblAll_TimeAndNames[startPos] = takeName
+					tblAllUnmuted_EndTimes[startPos] = endPos
+					j = j + 1
+				--end	
+			end
 		end
 	end
 end
