@@ -6,6 +6,7 @@
 	Date: 2021.09.06
 	Modified. date. 2021.09.28 增加 sorting 功能，增加判断，如果两个比邻的片段是一个文件，那它算一个音乐文件拼接成新的，就显示一次。
 				如果同一个音乐文件在不同的位置出现，那算被多次使用，最后也参与显示
+	Modified. 不管了！！不写了！！
 --]]
 
 
@@ -119,7 +120,7 @@ for i = 0, numOfSelectedItems - 1 do
 	-- if the item is in a muted track, ignore it
 	-- no time selected? go ahead record it
 	if ( bIsMutedTrack == 0 ) then
-		showMsg2("not muted")
+		--showMsg2("not muted")
 		if ( (bTimeSelected == false) or (bTimeSelected and endPos >= startTime_timeSelected and startPos <= endTime_timeSelected) ) then
 			if (isMute == bUnmute) then
 				local take = reaper.GetActiveTake(item)
