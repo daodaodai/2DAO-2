@@ -107,31 +107,38 @@ for i = 0, numOfSelectedItems - 1 do
 	local item = reaper.GetSelectedMediaItem( thisProject, i)
 	local isMute = reaper.GetMediaItemInfo_Value( item, "B_MUTE" )
 	local startPos = reaper.GetMediaItemInfo_Value( item, "D_POSITION" )	
+	local track = reaper.GetMediaItem_Track( item )	
 	--local startPosReadable = DecimalsToMinutes(startPos)
 	local timeLen = reaper.GetMediaItemInfo_Value( item, "D_LENGTH" )
 	local endPos = startPos + timeLen
 	local bRecordThisItem = false
 	
+	local bIsMutedTrack = reaper.GetMediaTrackInfo_Value(track, "B_MUTE")
+	
 	-- if the item is totally outside the time selection, ignore it
+	-- if the item is in a muted track, ignore it
 	-- no time selected? go ahead record it
-	if ( (bTimeSelected == false) or (bTimeSelected and endPos >= startTime_timeSelected and startPos <= endTime_timeSelected) ) then
-		if (isMute == bUnmute) then
-			local take = reaper.GetActiveTake(item)
-			if take and not reaper.TakeIsMIDI( take ) then
-				local takeName = reaper.GetTakeName( take )
-				
-				--if (takeName ~= previousItemName) then
-					--outputStr1 = startPos.."  "..outputStr1..takeName.."\n"
-					-- 记录：新片段的时间点、名字、终止时间
-					tblAllUnmuted_Times[j] = startPos
-					--tblAllUnmuted_TimesRaw[j] = startPos
-					previousItemName = takeName
-					tblAllUnmutedItems[j] = takeName
-					--showMsg(tblAllUnmutedItems[j], "新增take name")
-					tblAll_TimeAndNames[startPos] = takeName
-					tblAllUnmuted_EndTimes[startPos] = endPos
-					j = j + 1
-				--end	
+	if ( bIsMutedTrack == 0 ) then
+		showMsg2("not muted")
+		if ( (bTimeSelected == false) or (bTimeSelected and endPos >= startTime_timeSelected and startPos <= endTime_timeSelected) ) then
+			if (isMute == bUnmute) then
+				local take = reaper.GetActiveTake(item)
+				if take and not reaper.TakeIsMIDI( take ) then
+					local takeName = reaper.GetTakeName( take )
+					
+					--if (takeName ~= previousItemName) then
+						--outputStr1 = startPos.."  "..outputStr1..takeName.."\n"
+						-- 记录：新片段的时间点、名字、终止时间
+						tblAllUnmuted_Times[j] = startPos
+						--tblAllUnmuted_TimesRaw[j] = startPos
+						previousItemName = takeName
+						tblAllUnmutedItems[j] = takeName
+						--showMsg(tblAllUnmutedItems[j], "新增take name")
+						tblAll_TimeAndNames[startPos] = takeName
+						tblAllUnmuted_EndTimes[startPos] = endPos
+						j = j + 1
+					--end	
+				end
 			end
 		end
 	end
@@ -199,6 +206,6 @@ if bFound then
 	-- reaper.ShowConsoleMsg(outputStr2..outputStr_4..outputStr_3)
 	reaper.ShowConsoleMsg(outputStr2..outputStr_4)
 else
-	showMsg2("轨道上没有 没静音 的文件. No unmuted files found on tracks selected.")
+	showMsg2("轨道上没有 没静音 的文件. No unmuted files found on tracks selected.\n或者，选中了muted tracks。")
 end
 
